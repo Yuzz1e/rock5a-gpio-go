@@ -5,34 +5,34 @@ import (
 )
 
 func TestPullBitsForPin(t *testing.T) {
-	// Pin 0: PE=bit0, PS=bit1; mask PE=bit16, PS=bit17.
-	data, mask := pullBitsForPin(0, PullUp)
-	if data != 3 || mask != (1<<16|1<<17) {
-		t.Errorf("pin 0 PullUp: data=%d mask=%d", data, mask)
+	// Pin 0: PE=bit0, PS=bit1; writeMask PE=bit16, PS=bit17.
+	data, writeMask, lowerMask := pullBitsForPin(0, PullUp)
+	if data != 3 || writeMask != (1<<16|1<<17) || lowerMask != 3 {
+		t.Errorf("pin 0 PullUp: data=%#x writeMask=%#x lowerMask=%#x", data, writeMask, lowerMask)
 	}
-	data, mask = pullBitsForPin(0, PullDown)
-	if data != 1 || mask != (1<<16|1<<17) {
-		t.Errorf("pin 0 PullDown: data=%d mask=%d", data, mask)
+	data, writeMask, lowerMask = pullBitsForPin(0, PullDown)
+	if data != 1 || writeMask != (1<<16|1<<17) || lowerMask != 3 {
+		t.Errorf("pin 0 PullDown: data=%#x writeMask=%#x lowerMask=%#x", data, writeMask, lowerMask)
 	}
-	data, mask = pullBitsForPin(0, Floating)
-	if data != 0 || mask != (1<<16|1<<17) {
-		t.Errorf("pin 0 Floating: data=%d mask=%d", data, mask)
+	data, writeMask, lowerMask = pullBitsForPin(0, Floating)
+	if data != 0 || writeMask != (1<<16|1<<17) || lowerMask != 3 {
+		t.Errorf("pin 0 Floating: data=%#x writeMask=%#x lowerMask=%#x", data, writeMask, lowerMask)
 	}
 
-	// Pin 3: PE=bit6, PS=bit7; mask bit22, bit23.
-	data, mask = pullBitsForPin(3, PullUp)
-	if data != (1<<6|1<<7) || mask != (1<<22|1<<23) {
-		t.Errorf("pin 3 PullUp: data=%d mask=%d", data, mask)
+	// Pin 3: PE=bit6, PS=bit7; writeMask bit22, bit23.
+	data, writeMask, lowerMask = pullBitsForPin(3, PullUp)
+	if data != (1<<6|1<<7) || writeMask != (1<<22|1<<23) || lowerMask != (1<<6|1<<7) {
+		t.Errorf("pin 3 PullUp: data=%#x writeMask=%#x lowerMask=%#x", data, writeMask, lowerMask)
 	}
 
 	// Out of range
-	data, mask = pullBitsForPin(-1, PullUp)
-	if data != 0 || mask != 0 {
-		t.Errorf("pin -1 should return 0,0")
+	data, writeMask, lowerMask = pullBitsForPin(-1, PullUp)
+	if data != 0 || writeMask != 0 || lowerMask != 0 {
+		t.Errorf("pin -1 should return 0,0,0")
 	}
-	data, mask = pullBitsForPin(8, PullUp)
-	if data != 0 || mask != 0 {
-		t.Errorf("pin 8 should return 0,0")
+	data, writeMask, lowerMask = pullBitsForPin(8, PullUp)
+	if data != 0 || writeMask != 0 || lowerMask != 0 {
+		t.Errorf("pin 8 should return 0,0,0")
 	}
 }
 

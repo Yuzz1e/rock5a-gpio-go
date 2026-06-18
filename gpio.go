@@ -14,6 +14,6 @@ func SetPull(bank int, port rune, pin int, mode PullMode) error {
 	if !ok {
 		return errors.New("invalid bank/port combination")
 	}
-	data, mask := pullBitsForPin(pin, mode)
-	return writePullReg(baseAddr, offset, data, mask)
+	data, writeMask, lowerMask := pullBitsForPin(pin, mode)
+	return writePullReg(baseAddr, offset, data, writeMask, lowerMask)
 }
